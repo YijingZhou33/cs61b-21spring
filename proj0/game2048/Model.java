@@ -113,12 +113,68 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        board.setViewingPerspective(side);
+        for (int col = 0; col < board.size(); col += 1) {
+            boolean isColumnChanged = moveInColumn(col);
+            if (isColumnChanged) {
+                changed = true;
+            }
+        }
+        board.setViewingPerspective(Side.NORTH);
 
         checkGameOver();
         if (changed) {
             setChanged();
         }
         return changed;
+    }
+
+    /** Processes a single column */
+    public boolean moveInColumn(int col) {
+        boolean changed = false;
+        for (int row = board.size() - 1; row >= 0; row -= 1) {
+            int[] rows = getRowNumber(col, row);
+            // with merge
+            if (rows[1] != -1 && rows[2] != -1) {
+                Tile t = tile(col, rows[2]);
+                changed = board.move(col, rows[1], t);
+                score += t.value() * 2;
+            }
+
+            // no merge
+            if (rows[0] > rows[1] && rows[1] != -1) {
+                Tile t = tile(col, rows[1]);
+                board.move(col, rows[0], t);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    /** Returns the desired row number */
+    public int[] getRowNumber(int col, int row) {
+        // {firstEmptyRow, firstOccupiedRow, mergedRow}
+        int[] rows = {-1, -1, -1};
+        while (row >= 0) {
+            Tile t = board.tile(col, row);
+            if (t == null && rows[0] == -1) {
+                rows[0] = row;
+            }
+            if (t != null && rows[1] == -1) {
+                rows[1] = row;
+                for (int r2 = row - 1; r2 >= 0; r2 -= 1) {
+                    Tile t2 = board.tile(col, r2);
+                    if (t2 == null) {
+                        continue;
+                    }
+                    if (t.value() == t2.value()) {
+                        rows[2] = r2;
+                    }
+                }
+            }
+            row -= 1;
+        }
+        return rows;
     }
 
     /** Checks if the game is over and sets the gameOver variable
