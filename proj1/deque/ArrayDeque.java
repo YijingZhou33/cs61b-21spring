@@ -64,7 +64,7 @@ public class ArrayDeque<T> {
             return;
         }
 
-        if (nextLast - nextFirst > 1) {
+        if (nextFirst < nextLast) {
             for (int i = nextFirst + 1; i < nextLast; i += 1) {
                 System.out.print(items[i] + " ");
             }
@@ -86,6 +86,9 @@ public class ArrayDeque<T> {
     public T removeFirst() {
         if (size == 0) {
             return null;
+        }
+        if ((double) size / (double) items.length < 0.25 && items.length >= 16) {
+            resize((size * 3) / 2 + 1, nextFirst);
         }
         if (nextFirst == items.length - 1) {
             nextFirst = 0;
@@ -128,16 +131,14 @@ public class ArrayDeque<T> {
         if (size == 0 || index >= size || index < 0) {
             return null;
         }
-        if ((double) size / (double) items.length < 0.25 && items.length >= 16) {
-            resize((size * 3) / 2 + 1, nextFirst);
-        }
-        if (nextLast - nextFirst > 1) {
+
+        if (nextFirst < nextLast) {
             return items[nextFirst + index + 1];
         } else {
             if (nextFirst + index + 1 < items.length) {
                 return items[nextFirst + index + 1];
             } else {
-                return items[nextFirst + index - items.length];
+                return items[nextFirst + index - items.length + 1];
             }
         }
     }
