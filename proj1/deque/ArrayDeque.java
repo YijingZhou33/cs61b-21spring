@@ -19,17 +19,39 @@ public class ArrayDeque<T> {
         size = 0;
     }
 
+    /**
+     * Returns the index after adding one.
+     * Used for addLast() and removeFirst().
+     * */
+    private int plusOne(int index) {
+        if (index == capacity - 1) {
+            index = 0;
+        } else {
+            index += 1;
+        }
+        return index;
+    }
+
+    /**
+     * Returns the index after subtracting one.
+     * Used for addFirst() and removeLast().
+     * */
+    private int minusOne(int index) {
+        if (index == 0) {
+            index = capacity - 1;
+        } else {
+            index -= 1;
+        }
+        return index;
+    }
+
     /** Adds an item to the front of the deque. */
     public void addFirst(T item) {
         if (size == capacity - 1) {
             resize(capacity * 2);
         }
         items[nextFirst] = item;
-        if (nextFirst == 0) {
-            nextFirst = capacity - 1;
-        } else {
-            nextFirst -= 1;
-        }
+        nextFirst = minusOne(nextFirst);
         size += 1;
     }
 
@@ -39,11 +61,7 @@ public class ArrayDeque<T> {
             resize(capacity * 2);
         }
         items[nextLast] = item;
-        if (nextLast == capacity - 1) {
-            nextLast = 0;
-        } else {
-            nextLast += 1;
-        }
+        nextLast = plusOne(nextLast);
         size += 1;
     }
 
@@ -85,11 +103,7 @@ public class ArrayDeque<T> {
         if (((double) size / (double) capacity) < 0.25 && capacity >= 16) {
             resize(capacity / 4);
         }
-        if (nextFirst == capacity - 1) {
-            nextFirst = 0;
-        } else {
-            nextFirst += 1;
-        }
+        nextFirst = plusOne(nextFirst);
         T t = items[nextFirst];
         items[nextFirst] = null;
         size -= 1;
@@ -107,11 +121,7 @@ public class ArrayDeque<T> {
         if (((double) size / (double) capacity) < 0.25 && capacity >= 16) {
             resize(capacity / 4);
         }
-        if (nextLast == 0) {
-            nextLast = capacity - 1;
-        } else {
-            nextLast -= 1;
-        }
+        nextLast = minusOne(nextLast);
         T t = items[nextLast];
         items[nextLast] = null;
         size -= 1;
@@ -119,7 +129,7 @@ public class ArrayDeque<T> {
     }
 
     /** Returns the index after circling. */
-    private int plusOne(int index) {
+    private int modIndex(int index) {
         return (index + 1) % this.capacity;
     }
 
@@ -131,17 +141,17 @@ public class ArrayDeque<T> {
         if (size == 0 || index > size || index < 0) {
             return null;
         }
-        int i = plusOne(index + nextFirst);
+        int i = modIndex(index + nextFirst);
         return items[i];
     }
 
     /** Returns the resized ArrayDeque */
     public void resize(int capacity) {
         T[] newItems = (T[]) new Object[capacity];
-        int index = plusOne(nextFirst);
+        int index = modIndex(nextFirst);
         for (int i = 0; i < size; i += 1) {
             newItems[i] = items[index];
-            index = plusOne(index);
+            index = modIndex(index);
         }
         nextFirst = capacity - 1;
         nextLast = size;
