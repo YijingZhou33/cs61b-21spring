@@ -137,7 +137,10 @@ public class ArrayDeque<T> {
     public void resize(int capacity) {
         T[] newItems = (T[]) new Object[capacity];
         int index = (nextFirst + 1) % this.capacity;
-        System.arraycopy(items, index, newItems, 0, size);
+        for (int i = 0; i < size; i += 1) {
+            newItems[0] = items[index % size + 1];
+            index += 1;
+        }
         nextFirst = capacity - 1;
         nextLast = size;
         this.capacity = capacity;

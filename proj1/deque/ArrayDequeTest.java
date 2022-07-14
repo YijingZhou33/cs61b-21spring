@@ -124,4 +124,26 @@ public class ArrayDequeTest {
             assertEquals("Should have the same value", i, (double) ad1.removeLast(), 0.0);
         }
     }
+
+    @Test
+    public void fillUpEmptyFillUpAgain() {
+        ArrayDeque<Integer> ad1 = new ArrayDeque<>();
+
+        for (int i = 0; i < 8; i += 1) {
+            ad1.addLast(i);
+        }
+
+        for (int i = 0; i < 8; i += 1) {
+            ad1.removeFirst();
+        }
+
+        assertTrue("ad1 should now be empty", ad1.isEmpty());
+
+        for (int i = 0; i < 10; i += 1) {
+            ad1.addFirst(i);
+        }
+
+        assertEquals((Integer) 9, ad1.get(0));
+        assertEquals(null, ad1.get(10));
+    }
 }
