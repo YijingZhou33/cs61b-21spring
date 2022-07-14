@@ -130,7 +130,7 @@ public class ArrayDeque<T> {
 
     /** Returns the index after circling. */
     private int modIndex(int index) {
-        return (index + 1) % this.capacity;
+        return (nextFirst + 1 + index) % this.capacity;
     }
 
     /**
@@ -141,17 +141,15 @@ public class ArrayDeque<T> {
         if (size == 0 || index > size || index < 0) {
             return null;
         }
-        int i = modIndex(index + nextFirst);
+        int i = modIndex(index);
         return items[i];
     }
 
     /** Returns the resized ArrayDeque */
     public void resize(int capacity) {
         T[] newItems = (T[]) new Object[capacity];
-        int index = modIndex(nextFirst);
         for (int i = 0; i < size; i += 1) {
-            newItems[i] = items[index];
-            index = modIndex(index);
+            newItems[i] = items[modIndex(i)];
         }
         nextFirst = capacity - 1;
         nextLast = size;

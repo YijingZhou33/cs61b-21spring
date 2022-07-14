@@ -19,7 +19,7 @@ public class LinkedListDeque<T> {
     private int size;
     private LinkedNode sentinel;
 
-    /** Creates an empty LinkedListDeque */
+    /** Creates an empty LinkedListDeque. */
     public LinkedListDeque() {
         sentinel = new LinkedNode(null, null, null);
         sentinel.prev = sentinel;
@@ -61,11 +61,9 @@ public class LinkedListDeque<T> {
      */
     public void printDeque() {
         LinkedNode p = sentinel.next;
-        int cnt = size();
-        while (cnt != 0) {
+        for (int i = 0; i < size; i += 1) {
             System.out.print(p.item + " ");
             p = p.next;
-            cnt -= 1;
         }
         System.out.println();
     }
