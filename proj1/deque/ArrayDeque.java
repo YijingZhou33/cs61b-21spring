@@ -118,6 +118,11 @@ public class ArrayDeque<T> {
         return t;
     }
 
+    /** Returns the index after circling. */
+    private int plusOne(int index) {
+        return (index + 1) % this.capacity;
+    }
+
     /**
      * Gets the item at the given index.
      * If no such item exists, returns null.
@@ -126,20 +131,17 @@ public class ArrayDeque<T> {
         if (size == 0 || index > size || index < 0) {
             return null;
         }
-        int i = index + nextFirst + 1;
-        while (i >= capacity) {
-            i %= capacity;
-        }
+        int i = plusOne(index + nextFirst);
         return items[i];
     }
 
     /** Returns the resized ArrayDeque */
     public void resize(int capacity) {
         T[] newItems = (T[]) new Object[capacity];
-        int index = (nextFirst + 1) % this.capacity;
+        int index = plusOne(nextFirst);
         for (int i = 0; i < size; i += 1) {
-            newItems[0] = items[index % size + 1];
-            index += 1;
+            newItems[i] = items[index];
+            index = plusOne(index);
         }
         nextFirst = capacity - 1;
         nextLast = size;

@@ -143,7 +143,7 @@ public class ArrayDequeTest {
             ad1.addFirst(i);
         }
 
-        assertEquals((Integer) 9, ad1.get(0));
+        assertEquals((Integer) 4, ad1.get(5));
         assertEquals(null, ad1.get(10));
     }
 }
